@@ -176,9 +176,15 @@ export default function SheetPage() {
   return (
     <div className="w-full h-full flex flex-col p-6 sm:p-6 overflow-hidden">
       <div className="flex items-center justify-between pb-6 flex-shrink-0 flex-wrap gap-4">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
-          30 days of Open Source sheet
-        </h2>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
+            30 days of Open Source sheet
+          </h2>
+          <span className="text-xs text-ox-white">
+            (i don&apos;t have a marketing budget, please share this sheet with
+            others 🙏 :)
+          </span>
+        </div>
         <div className="flex items-center gap-3 flex-shrink-0">
           {copied && (
             <Badge className="bg-ox-purple text-white border-0 flex items-center gap-1">
@@ -212,7 +218,9 @@ export default function SheetPage() {
 
       <div className="mb-6 flex-shrink-0">
         <p className="text-white text-sm italic">
-          &quot;sometimes, these modules may feel boring and hard af but that&apos;s the cost of learning something worthy. you go through it. you win. simple.&quot; — ajeet
+          &quot;sometimes, these modules may feel boring and hard af but
+          that&apos;s the cost of learning something worthy. you go through it.
+          you win. simple.&quot; — ajeet
         </p>
       </div>
 

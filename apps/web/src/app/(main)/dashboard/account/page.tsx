@@ -37,6 +37,16 @@ export default function AccountPage() {
               )}
             </div>
           </div>
+          {!isPaidUser && (
+            <div>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center px-3 py-1.5 bg-ox-purple hover:bg-ox-purple-2 text-white rounded-md transition-colors text-xs font-medium"
+              >
+                be a pro
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
