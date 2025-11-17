@@ -87,23 +87,40 @@ export default function NewsletterPage() {
   const slug = params.slug as string;
   const [newsletter, setNewsletter] = useState<NewsletterData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<'unauthorized' | 'forbidden' | 'not-found' | null>(null);
   const { isPaidUser, isLoading: subscriptionLoading } = useSubscription();
 
   useEffect(() => {
     if (subscriptionLoading) return;
 
     fetch(`/api/newsletters/${slug}`)
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (res.status === 401) {
+          setError('unauthorized');
+          setLoading(false);
+          return null;
+        }
+        if (res.status === 403) {
+          setError('forbidden');
+          setLoading(false);
+          return null;
+        }
+        if (!res.ok) {
+          setError('not-found');
+          setLoading(false);
+          return null;
+        }
+        return res.json();
+      })
       .then((data) => {
-        if (data.error) {
-          setNewsletter(null);
-        } else {
+        if (data && !data.error) {
           setNewsletter(data);
+          setError(null);
         }
         setLoading(false);
       })
       .catch(() => {
-        setNewsletter(null);
+        setError('not-found');
         setLoading(false);
       });
   }, [slug, subscriptionLoading]);
@@ -119,8 +136,13 @@ export default function NewsletterPage() {
     );
   }
 
-  if (!isPaidUser) {
+  if (!isPaidUser || error === 'forbidden') {
     return <PremiumUpgradePrompt />;
+  }
+
+  if (error === 'unauthorized') {
+    router.push('/login');
+    return null;
   }
 
   if (loading) {

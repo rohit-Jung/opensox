@@ -3,6 +3,9 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { marked } from "marked";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/lib/auth/config";
+import { serverTrpc } from "@/lib/trpc-server";
 
 // Configure marked for rich markdown support
 marked.setOptions({
@@ -18,6 +21,34 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Authenticate user
+  const session = await getServerSession(authConfig);
+  
+  if (!session || !session.user?.email) {
+    return NextResponse.json(
+      { error: "Unauthorized - Please sign in" },
+      { status: 401 }
+    );
+  }
+
+  // Verify paid subscription
+  try {
+    const subscriptionStatus = await serverTrpc.user.subscriptionStatus.query();
+    
+    if (!subscriptionStatus.isPaidUser) {
+      return NextResponse.json(
+        { error: "Forbidden - Premium subscription required" },
+        { status: 403 }
+      );
+    }
+  } catch (error) {
+    console.error("Error checking subscription:", error);
+    return NextResponse.json(
+      { error: "Failed to verify subscription status" },
+      { status: 500 }
+    );
+  }
+
   const { slug } = await params;
   const now = Date.now();
   const cached = newsletterCache.get(slug);

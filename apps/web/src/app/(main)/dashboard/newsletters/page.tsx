@@ -16,6 +16,7 @@ import { useNewsletterFilters } from "@/hooks/useNewsletterFilters";
 export default function NewslettersPage() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<'unauthorized' | 'forbidden' | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [sortFilter, setSortFilter] = useState<SortFilter>("newest");
@@ -28,9 +29,27 @@ export default function NewslettersPage() {
     if (subscriptionLoading) return;
     
     fetch("/api/newsletters")
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (res.status === 401) {
+          setError('unauthorized');
+          setLoading(false);
+          return null;
+        }
+        if (res.status === 403) {
+          setError('forbidden');
+          setLoading(false);
+          return null;
+        }
+        if (!res.ok) {
+          setLoading(false);
+          return null;
+        }
+        return res.json();
+      })
       .then((data) => {
-        setNewsletters(data);
+        if (data) {
+          setNewsletters(data);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -72,7 +91,7 @@ export default function NewslettersPage() {
     );
   }
 
-  if (!isPaidUser) {
+  if (!isPaidUser || error === 'forbidden') {
     return <PremiumUpgradePrompt />;
   }
 

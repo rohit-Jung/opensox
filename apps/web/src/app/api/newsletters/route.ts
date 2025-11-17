@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/lib/auth/config";
+import { serverTrpc } from "@/lib/trpc-server";
 
 // Cache newsletters in memory for faster subsequent loads
 let cachedNewsletters: any[] | null = null;
@@ -9,6 +12,34 @@ let lastCacheTime = 0;
 const CACHE_DURATION = 60000; // 1 minute cache
 
 export async function GET() {
+  // Authenticate user
+  const session = await getServerSession(authConfig);
+  
+  if (!session || !session.user?.email) {
+    return NextResponse.json(
+      { error: "Unauthorized - Please sign in" },
+      { status: 401 }
+    );
+  }
+
+  // Verify paid subscription
+  try {
+    const subscriptionStatus = await serverTrpc.user.subscriptionStatus.query();
+    
+    if (!subscriptionStatus.isPaidUser) {
+      return NextResponse.json(
+        { error: "Forbidden - Premium subscription required" },
+        { status: 403 }
+      );
+    }
+  } catch (error) {
+    console.error("Error checking subscription:", error);
+    return NextResponse.json(
+      { error: "Failed to verify subscription status" },
+      { status: 500 }
+    );
+  }
+
   const now = Date.now();
   
   // Return cached data if available and fresh
