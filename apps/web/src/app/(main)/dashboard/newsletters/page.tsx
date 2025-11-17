@@ -8,7 +8,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Newsletter } from "@/components/newsletters/NewsletterCard";
 import { NewsletterSkeleton } from "@/components/newsletters/NewsletterSkeleton";
 import { PremiumUpgradePrompt } from "@/components/newsletters/PremiumUpgradePrompt";
-import { NewsletterFilters, TimeFilter } from "@/components/newsletters/NewsletterFilters";
+import { NewsletterFilters, TimeFilter, SortFilter } from "@/components/newsletters/NewsletterFilters";
 import { NewsletterPagination } from "@/components/newsletters/NewsletterPagination";
 import { NewsletterList } from "@/components/newsletters/NewsletterList";
 import { useNewsletterFilters } from "@/hooks/useNewsletterFilters";
@@ -18,13 +18,13 @@ export default function NewslettersPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
+  const [sortFilter, setSortFilter] = useState<SortFilter>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const { isPaidUser, isLoading: subscriptionLoading } = useSubscription();
   
   const itemsPerPage = 5;
 
   useEffect(() => {
-    // Fetch newsletters for all users (testing mode)
     if (subscriptionLoading) return;
     
     fetch("/api/newsletters")
@@ -38,21 +38,32 @@ export default function NewslettersPage() {
 
   const filteredNewsletters = useNewsletterFilters(newsletters, searchQuery, timeFilter);
 
-  const totalPages = Math.ceil(filteredNewsletters.length / itemsPerPage);
+  // Apply sorting
+  const sortedNewsletters = useMemo(() => {
+    const sorted = [...filteredNewsletters];
+    sorted.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortFilter === "newest" ? dateB - dateA : dateA - dateB;
+    });
+    return sorted;
+  }, [filteredNewsletters, sortFilter]);
+
+  const totalPages = Math.ceil(sortedNewsletters.length / itemsPerPage);
   const paginatedNewsletters = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredNewsletters.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredNewsletters, currentPage]);
+    return sortedNewsletters.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedNewsletters, currentPage]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, timeFilter]);
+  }, [searchQuery, timeFilter, sortFilter]);
 
   if (subscriptionLoading) {
     return (
       <div className="w-full h-full overflow-auto">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
           <Skeleton className="h-8 w-48 mb-6 bg-zinc-800" />
           <NewsletterSkeleton />
           <NewsletterSkeleton />
@@ -66,39 +77,39 @@ export default function NewslettersPage() {
   }
 
   return (
-    <div className="w-full h-full overflow-auto">
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+    <div className="w-full h-full overflow-auto ">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-ox-white mb-2">
-            Newsletters
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">
+            Newsletter
           </h1>
           <p className="text-sm sm:text-base text-zinc-400">
-            Stay updated with our latest news and insights
+            Stay updated with our latest insights and stories
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <NewsletterFilters
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            timeFilter={timeFilter}
-            onTimeFilterChange={setTimeFilter}
-          />
+        <NewsletterFilters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          timeFilter={timeFilter}
+          onTimeFilterChange={setTimeFilter}
+          sortFilter={sortFilter}
+          onSortFilterChange={setSortFilter}
+        />
 
-          <div className="space-y-4 sm:space-y-6">
-            <NewsletterList
-              newsletters={paginatedNewsletters}
-              loading={loading}
-              hasFilters={!!searchQuery || timeFilter !== "all"}
-            />
-          </div>
-
-          <NewsletterPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
+        <div className="mt-6 sm:mt-8">
+          <NewsletterList
+            newsletters={paginatedNewsletters}
+            loading={loading}
+            hasFilters={!!searchQuery || timeFilter !== "all"}
           />
         </div>
+
+        <NewsletterPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CalendarIcon, ClockIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSubscription } from "@/hooks/useSubscription";
+import { PremiumUpgradePrompt } from "@/components/newsletters/PremiumUpgradePrompt";
 
 interface NewsletterData {
   title: string;
@@ -17,22 +18,64 @@ interface NewsletterData {
 
 function NewsletterSkeleton() {
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8 pb-6 border-b border-[#1a1a1d]">
-        <Skeleton className="h-10 w-full mb-4 bg-zinc-800" />
-        <Skeleton className="h-8 w-3/4 mb-4 bg-zinc-800" />
-        <div className="flex gap-4">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header skeleton */}
+      <div className="mb-8 pb-6 border-b border-zinc-800">
+        <Skeleton className="h-8 w-full max-w-3xl mb-4 bg-zinc-800" />
+        <Skeleton className="h-8 w-3/4 mb-6 bg-zinc-800" />
+        <div className="flex flex-wrap items-center gap-3">
           <Skeleton className="h-4 w-32 bg-zinc-800" />
+          <Skeleton className="h-4 w-4 bg-zinc-800 rounded-full" />
           <Skeleton className="h-4 w-24 bg-zinc-800" />
         </div>
       </div>
-      <div className="space-y-4">
-        <Skeleton className="h-4 w-full bg-zinc-800" />
-        <Skeleton className="h-4 w-full bg-zinc-800" />
-        <Skeleton className="h-4 w-5/6 bg-zinc-800" />
-        <Skeleton className="h-32 w-full bg-zinc-800 mt-6" />
-        <Skeleton className="h-4 w-full bg-zinc-800" />
-        <Skeleton className="h-4 w-4/5 bg-zinc-800" />
+
+      {/* Content skeleton */}
+      <div className="space-y-6">
+        {/* Paragraph 1 */}
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-11/12 bg-zinc-800" />
+        </div>
+
+        {/* Heading */}
+        <Skeleton className="h-7 w-2/3 bg-zinc-800 mt-8" />
+
+        {/* Paragraph 2 */}
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-10/12 bg-zinc-800" />
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+        </div>
+
+        {/* Image placeholder */}
+        <Skeleton className="h-64 w-full bg-zinc-800 rounded-lg mt-6" />
+
+        {/* Heading */}
+        <Skeleton className="h-7 w-1/2 bg-zinc-800 mt-8" />
+
+        {/* Paragraph 3 */}
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-9/12 bg-zinc-800" />
+        </div>
+
+        {/* List items */}
+        <div className="space-y-2 mt-4">
+          <Skeleton className="h-4 w-5/6 bg-zinc-800" />
+          <Skeleton className="h-4 w-4/5 bg-zinc-800" />
+          <Skeleton className="h-4 w-11/12 bg-zinc-800" />
+        </div>
+
+        {/* Final paragraph */}
+        <div className="space-y-3 mt-6">
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-full bg-zinc-800" />
+          <Skeleton className="h-4 w-3/4 bg-zinc-800" />
+        </div>
       </div>
     </div>
   );
@@ -44,10 +87,9 @@ export default function NewsletterPage() {
   const slug = params.slug as string;
   const [newsletter, setNewsletter] = useState<NewsletterData | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isLoading: subscriptionLoading } = useSubscription();
+  const { isPaidUser, isLoading: subscriptionLoading } = useSubscription();
 
   useEffect(() => {
-    // Fetch for all users (testing mode)
     if (subscriptionLoading) return;
 
     fetch(`/api/newsletters/${slug}`)
@@ -69,19 +111,23 @@ export default function NewsletterPage() {
   if (subscriptionLoading) {
     return (
       <div className="w-full h-full overflow-auto">
-        <div className="w-full px-4 sm:px-6 py-4 sm:py-5">
-          <Skeleton className="h-10 w-40 mb-6 bg-zinc-800" />
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <Skeleton className="h-8 w-32 mb-6 bg-zinc-800" />
           <NewsletterSkeleton />
         </div>
       </div>
     );
   }
 
+  if (!isPaidUser) {
+    return <PremiumUpgradePrompt />;
+  }
+
   if (loading) {
     return (
       <div className="w-full h-full overflow-auto">
-        <div className="w-full px-4 sm:px-6 py-4 sm:py-5">
-          <Skeleton className="h-10 w-40 mb-6 bg-zinc-800" />
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <Skeleton className="h-8 w-32 mb-6 bg-zinc-800" />
           <NewsletterSkeleton />
         </div>
       </div>
@@ -92,12 +138,14 @@ export default function NewsletterPage() {
     return (
       <div className="w-full h-full flex items-center justify-center px-4">
         <div className="text-center">
-          <p className="text-xl text-ox-white mb-4">Newsletter not found</p>
+          <h2 className="text-xl font-semibold text-white mb-2">Newsletter not found</h2>
+          <p className="text-zinc-400 text-sm mb-4">The newsletter you&apos;re looking for doesn&apos;t exist.</p>
           <button
             onClick={() => router.push("/dashboard/newsletters")}
-            className="text-ox-purple hover:text-purple-400 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-ox-purple hover:bg-purple-600 text-white text-sm rounded-lg transition-colors"
           >
-            ← Back to newsletters
+            <ArrowLeftIcon className="size-4" />
+            Back to newsletters
           </button>
         </div>
       </div>
@@ -106,40 +154,57 @@ export default function NewsletterPage() {
 
   return (
     <div className="w-full h-full overflow-auto">
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-ox-purple hover:text-purple-400 mb-6 transition-colors"
+          className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white mb-6 transition-colors text-sm group"
         >
-          <ArrowLeftIcon className="size-4 sm:size-5 shrink-0" />
-          <span className="text-sm sm:text-base">Back to newsletters</span>
+          <ArrowLeftIcon className="size-4 shrink-0 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back</span>
         </button>
 
-        <article className="prose prose-invert max-w-4xl mx-auto">
-          <header className="mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-[#1a1a1d]">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-ox-white mb-4 break-words">
+        <article>
+          {/* Header */}
+          <header className="mb-8 pb-6 border-b border-zinc-800">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
               {newsletter.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-zinc-400">
-              <span className="flex items-center gap-1">
+            
+            {/* Metadata */}
+            <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+              <span className="flex items-center gap-1.5">
                 <CalendarIcon className="size-4 shrink-0" />
-                <span className="whitespace-nowrap">
-                  {new Date(newsletter.date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+                {new Date(newsletter.date).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="text-zinc-600">•</span>
+              <span className="flex items-center gap-1.5">
                 <ClockIcon className="size-4 shrink-0" />
-                <span className="whitespace-nowrap">{newsletter.readTime}</span>
+                {newsletter.readTime}
               </span>
             </div>
           </header>
 
+          {/* Content */}
           <div
-            className="newsletter-content"
+            className="newsletter-content prose prose-invert max-w-none
+              prose-headings:text-white prose-headings:font-semibold
+              prose-h2:text-xl prose-h2:sm:text-2xl prose-h2:mt-8 prose-h2:mb-3
+              prose-h3:text-lg prose-h3:sm:text-xl prose-h3:mt-6 prose-h3:mb-2
+              prose-p:text-zinc-300 prose-p:leading-relaxed prose-p:mb-4
+              prose-a:text-ox-purple prose-a:no-underline hover:prose-a:text-purple-400 
+              prose-strong:text-white prose-strong:font-medium
+              prose-ul:text-zinc-300 prose-ol:text-zinc-300
+              prose-li:my-1
+              prose-blockquote:border-l-2 prose-blockquote:border-ox-purple prose-blockquote:pl-4 
+              prose-blockquote:italic prose-blockquote:text-zinc-400
+              prose-code:text-ox-purple prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+              prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-800
+              prose-img:rounded-lg"
             dangerouslySetInnerHTML={{ __html: newsletter.content }}
           />
         </article>

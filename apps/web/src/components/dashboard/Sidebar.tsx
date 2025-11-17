@@ -44,6 +44,12 @@ const SIDEBAR_ROUTES = [
     label: "OSS Sheet",
     icon: <DocumentTextIcon className="size-5" />,
   },
+  {
+    path: "/dashboard/newsletters",
+    label: "Newsletters",
+    icon: <NewspaperIcon className="size-5" />,
+    isPro: true,
+  },
 ];
 
 export default function Sidebar({ overlay = false }: { overlay?: boolean }) {
@@ -119,11 +125,21 @@ export default function Sidebar({ overlay = false }: { overlay?: boolean }) {
         {SIDEBAR_ROUTES.map((route) => {
           return (
             <Link href={route.path} key={route.path}>
-              <SidebarItem
-                itemName={route.label}
-                icon={route.icon}
-                collapsed={isCollapsed}
-              />
+              <div className="w-full h-[44px] flex items-center rounded-md cursor-pointer transition-colors px-2 gap-3 pl-3 hover:bg-[#292929] group">
+                <span className="shrink-0 text-[#eaeaea] group-hover:text-white transition-colors">
+                  {route.icon}
+                </span>
+                {!isCollapsed && (
+                  <div className="flex items-center gap-1">
+                    <h1 className="text-xs font-medium text-[#c8c8c8] group-hover:text-white transition-colors">
+                      {route.label}
+                    </h1>
+                    {route.isPro && (
+                      <OpensoxProBadge className="px-1.5 py-0.5 scale-75" />
+                    )}
+                  </div>
+                )}
+              </div>
             </Link>
           );
         })}

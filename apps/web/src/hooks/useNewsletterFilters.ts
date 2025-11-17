@@ -8,40 +8,25 @@ export function useNewsletterFilters(
   timeFilter: TimeFilter
 ) {
   return useMemo(() => {
-    let filtered = newsletters;
+    let filtered = [...newsletters];
 
-    // Search filter
+    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (newsletter) =>
           newsletter.title.toLowerCase().includes(query) ||
-          newsletter.excerpt.toLowerCase().includes(query)
+          newsletter.description?.toLowerCase().includes(query) ||
+          newsletter.excerpt?.toLowerCase().includes(query)
       );
     }
 
-    // Time filter
+    // Apply time filter
     if (timeFilter !== "all") {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      
       filtered = filtered.filter((newsletter) => {
-        const newsletterDate = new Date(newsletter.date);
-        
-        switch (timeFilter) {
-          case "day":
-            return newsletterDate >= today;
-          case "week":
-            const weekAgo = new Date(today);
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            return newsletterDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(today);
-            monthAgo.setMonth(monthAgo.getMonth() - 1);
-            return newsletterDate >= monthAgo;
-          default:
-            return true;
-        }
+        const date = new Date(newsletter.date);
+        const month = date.toLocaleString("en-US", { month: "long" }).toLowerCase();
+        return month === timeFilter;
       });
     }
 

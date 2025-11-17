@@ -115,3 +115,81 @@
 .newsletter-content tbody tr:nth-child(even) {
     @apply bg-[#0f0f11];
 }
+
+/* Enhanced Newsletter Content Styles */
+.newsletter-content-wrapper {
+  position: relative;
+  background: linear-gradient(to bottom, transparent 0%, rgba(139, 92, 246, 0.02) 50%, transparent 100%);
+  padding: 2rem 0;
+  margin: 0 -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .newsletter-content-wrapper {
+    margin: 0 -2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Minimal Newsletter Content Styles */
+.newsletter-content h2 {
+  position: relative;
+  
+}
+
+.newsletter-content img {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.newsletter-content ul,
+.newsletter-content ol {
+  margin-left: 1.25rem;
+}
+
+.newsletter-content li::marker {
+  color: rgb(139, 92, 246);
+}
+
+.newsletter-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.newsletter-content th,
+.newsletter-content td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.newsletter-content th {
+  background: rgba(139, 92, 246, 0.1);
+  color: white;
+  font-weight: 500;
+}
+
+.newsletter-content td {
+  color: rgb(212, 212, 216);
+}
+
+/* Smooth reading experience */
+.newsletter-article {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
