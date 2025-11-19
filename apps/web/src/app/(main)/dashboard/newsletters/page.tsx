@@ -3,6 +3,7 @@
 import "@/styles/newsletter.css";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Newsletter } from "@/components/newsletters/NewsletterCard";
@@ -14,6 +15,7 @@ import { NewsletterList } from "@/components/newsletters/NewsletterList";
 import { useNewsletterFilters } from "@/hooks/useNewsletterFilters";
 
 export default function NewslettersPage() {
+  const router = useRouter();
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<'unauthorized' | 'forbidden' | null>(null);
@@ -89,6 +91,11 @@ export default function NewslettersPage() {
         </div>
       </div>
     );
+  }
+
+  if (error === 'unauthorized') {
+    router.push('/login');
+    return null;
   }
 
   if (!isPaidUser || error === 'forbidden') {

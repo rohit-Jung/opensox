@@ -24,7 +24,7 @@ export async function GET() {
 
   // Verify paid subscription
   try {
-    const subscriptionStatus = await serverTrpc.user.subscriptionStatus.query();
+    const subscriptionStatus = await serverTrpc(session).user.subscriptionStatus.query();
     
     if (!subscriptionStatus.isPaidUser) {
       return NextResponse.json(
@@ -82,6 +82,9 @@ export async function GET() {
     return NextResponse.json(newsletters);
   } catch (error) {
     console.error("Error reading newsletters:", error);
-    return NextResponse.json([]);
+    return NextResponse.json(
+      { error: "Failed to read newsletters" },
+      { status: 500 }
+    );
   }
 }

@@ -144,33 +144,8 @@ export default function Sidebar({ overlay = false }: { overlay?: boolean }) {
           );
         })}
         
-        <SidebarItem
-          itemName="Find projects"
-          onclick={handleFindProjects}
-          icon={<MagnifyingGlassIcon className="size-5" />}
-          collapsed={isCollapsed}
-        />
         
-        <Link 
-          href="/dashboard/newsletters" 
-          className={getSidebarLinkClassName(pathname, "/dashboard/newsletters")}
-        >
-          <div className="relative">
-            <SidebarItem
-              itemName="Newsletters"
-              icon={<NewspaperIcon className="size-5" />}
-              collapsed={isCollapsed}
-            />
-            {!isCollapsed && (
-              <Badge 
-                variant="default" 
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-[#a472ea] to-[#7150e7] text-white text-[10px] px-1.5 py-0.5 border-none"
-              >
-                PRO
-              </Badge>
-            )}
-          </div>
-        </Link>
+      
         
         <SidebarItem
           itemName="Request a feature"
