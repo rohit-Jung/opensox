@@ -3,6 +3,7 @@ import { z } from "zod";
 import { userService } from "../services/user.service.js";
 import { TRPCError } from "@trpc/server";
 import { redisCache } from "@opensox/shared";
+import { validateAvatarUrl } from "../utils/avatar-validator.js";
 
 // Cache key for all testimonials
 const TESTIMONIALS_CACHE_KEY = "testimonials:all";
@@ -71,6 +72,9 @@ export const testimonialRouter = router({
                     message: "Only premium users can submit testimonials",
                 });
             }
+
+            // Validate avatar URL with strict security checks
+            await validateAvatarUrl(input.avatar);
 
             const result = await ctx.db.prisma.testimonial.upsert({
                 where: { userId },

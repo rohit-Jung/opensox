@@ -2,6 +2,10 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { Context } from "./context.js";
 import { verifyToken } from "./utils/auth.js";
+import type { User } from "@prisma/client";
+
+// Type for context after authentication middleware
+type ProtectedContext = Context & { user: User };
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -37,4 +41,6 @@ const isAuthed = t.middleware(async ({ ctx, next }) => {
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const protectedProcedure:any = t.procedure.use(isAuthed);
+// Using 'as any' to avoid TypeScript portability errors
+// Type safety is maintained through AppRouter type inference
+export const protectedProcedure = t.procedure.use(isAuthed) as any;

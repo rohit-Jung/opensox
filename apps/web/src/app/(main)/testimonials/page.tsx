@@ -172,7 +172,7 @@ const TestimonialsPage = () => {
         )}
 
         {/* Masonry/Bento Grid */}
-        {!isLoading && (
+        {!isLoading && allTestimonials.length > 0 && (
           <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4 mx-auto max-w-7xl">
             {allTestimonials.map((testimonial) => (
               <TestimonialCard key={testimonial.id} item={testimonial} />
