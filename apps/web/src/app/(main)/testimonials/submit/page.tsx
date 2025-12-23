@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Navbar from "@/components/landing-sections/navbar";
 import Footer from "@/components/landing-sections/footer";
-import { Loader2, Link as LinkIcon } from "lucide-react";
+import { Loader2, Link as LinkIcon, ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 // Supported social platforms for validation
@@ -84,12 +85,8 @@ export default function SubmitTestimonialPage() {
 
   const [error, setError] = useState<string | null>(null);
 
-  const utils = trpc.useUtils();
-
   const submitMutation = (trpc as any).testimonial.submit.useMutation({
     onSuccess: async () => {
-      // Invalidate the testimonials cache on the frontend
-      await utils.testimonial.getAll.invalidate();
       // Redirect to testimonials page
       router.push("/testimonials");
     },
@@ -152,10 +149,49 @@ export default function SubmitTestimonialPage() {
     (isPaidUser && isDataLoading)
   ) {
     return (
-      <main className="min-h-screen w-full bg-[#101010] text-white font-sans overflow-hidden flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
-          <p className="text-neutral-400">Loading...</p>
+      <main className="min-h-screen w-full bg-[#101010] text-white font-sans overflow-hidden flex flex-col relative">
+        <Navbar />
+        <div className="flex-1 w-full max-w-[2000px] mx-auto border-x border-[#252525] flex flex-col pt-32 pb-20 px-4 md:px-6 lg:px-10 mt-10">
+          <div className="max-w-2xl mx-auto w-full space-y-8">
+            <div className="text-center space-y-2">
+              <Skeleton className="h-10 w-3/4 mx-auto bg-neutral-800" />
+              <Skeleton className="h-5 w-1/2 mx-auto bg-neutral-800" />
+            </div>
+
+            <div className="bg-neutral-900/50 border border-[#252525] rounded-2xl p-6 md:p-8 space-y-6">
+              {/* Profile & Name Skeleton */}
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-40 bg-neutral-800" />
+                <div className="flex gap-4 items-start">
+                  <Skeleton className="w-16 h-16 rounded-full bg-neutral-800" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-10 w-full bg-neutral-800" />
+                    <Skeleton className="h-3 w-16 bg-neutral-800" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content Skeleton */}
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-neutral-800" />
+                <Skeleton className="h-32 w-full bg-neutral-800" />
+                <Skeleton className="h-3 w-20 bg-neutral-800" />
+              </div>
+
+              {/* Social Link Skeleton */}
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32 bg-neutral-800" />
+                <Skeleton className="h-10 w-full bg-neutral-800" />
+                <Skeleton className="h-3 w-48 bg-neutral-800" />
+              </div>
+
+              {/* Submit Button Skeleton */}
+              <Skeleton className="h-10 w-full bg-neutral-800" />
+            </div>
+          </div>
+        </div>
+        <div className="max-w-[2000px] w-full mx-auto">
+          <Footer />
         </div>
       </main>
     );
@@ -249,6 +285,14 @@ export default function SubmitTestimonialPage() {
               Share your experience with the community.
             </p>
           </div>
+
+          <button
+            onClick={() => router.push("/dashboard/home")}
+            className="flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors mb-4"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Home</span>
+          </button>
 
           <div className="bg-neutral-900/50 border border-[#252525] rounded-2xl p-6 md:p-8 space-y-6">
             {/* Already Submitted State */}

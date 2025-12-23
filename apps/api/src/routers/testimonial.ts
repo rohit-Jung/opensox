@@ -2,34 +2,16 @@ import { router, protectedProcedure, publicProcedure } from "../trpc.js";
 import { z } from "zod";
 import { userService } from "../services/user.service.js";
 import { TRPCError } from "@trpc/server";
-import { redisCache } from "@opensox/shared";
 import { validateAvatarUrl } from "../utils/avatar-validator.js";
-
-// Cache key for all testimonials
-const TESTIMONIALS_CACHE_KEY = "testimonials:all";
-// Cache TTL: 5 minutes (300 seconds)
-const TESTIMONIALS_CACHE_TTL = 300;
 
 export const testimonialRouter = router({
     getAll: publicProcedure.query(async ({ ctx }: any) => {
-        // Try to get from cache first
-        const cached = await redisCache.get<any[]>(TESTIMONIALS_CACHE_KEY);
-        if (cached) {
-            console.log("Testimonials served from cache");
-            return cached;
-        }
-        console.log("[testimonials] cache MISS", TESTIMONIALS_CACHE_KEY);
-
-        // If not in cache, fetch from database
+        // Fetch testimonials directly from database without caching
         const testimonials = await ctx.db.prisma.testimonial.findMany({
             orderBy: {
                 createdAt: 'desc',
             },
         });
-
-        // Store in cache for future requests
-        await redisCache.set(TESTIMONIALS_CACHE_KEY, testimonials, TESTIMONIALS_CACHE_TTL);
-        console.log("Testimonials fetched from database and cached");
 
         return testimonials;
     }),
@@ -115,10 +97,6 @@ export const testimonialRouter = router({
                     socialLink: input.socialLink || null,
                 },
             });
-
-            // Invalidate cache after testimonial submission
-            await redisCache.del(TESTIMONIALS_CACHE_KEY);
-            console.log("Testimonials cache invalidated after submission");
 
             return result;
         }),
