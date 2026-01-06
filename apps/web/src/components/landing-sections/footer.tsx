@@ -74,6 +74,12 @@ const Footer = () => {
                   Pricing
                 </Link>
                 <Link
+                  href="/testimonials"
+                  className="text-[#b1b1b1] hover:text-white transition-colors text-xs"
+                >
+                  Testimonials
+                </Link>
+                <Link
                   href="/pitch"
                   className="text-[#b1b1b1] hover:text-white transition-colors text-xs"
                 >

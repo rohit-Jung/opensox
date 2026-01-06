@@ -369,6 +369,16 @@ const Pricing = () => {
             </div>
           </div>
           <TestimonialsSection />
+          <div className="border-b border-[#252525] text-center py-8 px-4">
+            <p className="text-lg mb-4 text-text-secondary">
+              <Link
+                href="/testimonials"
+                className="text-brand-purple-light hover:text-brand-purple transition-colors underline"
+              >
+                See what my existing investors said about me.
+              </Link>
+            </p>
+          </div>
           <div className=" border-b border-[#252525] text-center py-4 font-bold px-4">
             For any doubts or queries, feel free to ping us at{" "}
             <Link
@@ -534,7 +544,7 @@ const SecondaryPricingCard = ({
                 callbackUrl={callbackUrl}
                 buttonLocation="pricing_page"
               />
-              <div className="flex justify-center mt-3">
+              <div className="flex flex-col items-center gap-2 mt-3">
                 <Link
                   href="/pitch"
                   className="text-sm text-text-tertiary hover:text-brand-purple-light transition-colors lowercase"

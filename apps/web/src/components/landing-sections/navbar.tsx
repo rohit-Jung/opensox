@@ -50,12 +50,11 @@ const Navbar = () => {
 
   const links = [
     { name: "Pricing", href: "/pricing" },
+    { name: "Testimonials", href: "/testimonials" },
     { name: "Features", href: "/#features" },
     { name: "Demo", href: "/#demo" },
     { name: "How it works", href: "/#HIW" },
     { name: "Stats", href: "/#Stats" },
-    { name: "Contact", href: "/#Contact" },
-    { name: "FAQ", href: "/#faq" },
   ];
 
   return (

@@ -8,10 +8,14 @@ import Link from "next/link";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 const CTA = () => {
-  const { trackButtonClick } = useAnalytics();
+  const { trackButtonClick, trackLinkClick } = useAnalytics();
 
   const handleGetStartedClick = () => {
     trackButtonClick("Get Started", "cta_section");
+  };
+
+  const handleTestimonialsClick = () => {
+    trackLinkClick("/testimonials", "See what our investors say", "cta_section", false);
   };
 
   return (
@@ -40,6 +44,13 @@ const CTA = () => {
           <Terminal />
           Get Started
         </PrimaryButtom>
+      </Link>
+      <Link
+        href="/testimonials"
+        className="text-text-tertiary hover:text-brand-purple-light transition-colors text-sm lg:text-base underline z-30"
+        onClick={handleTestimonialsClick}
+      >
+        See what our investors say →
       </Link>
     </div>
   );

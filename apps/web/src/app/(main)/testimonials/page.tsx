@@ -2,7 +2,8 @@
 import React, { useMemo } from "react";
 import Navbar from "@/components/landing-sections/navbar";
 import Footer from "@/components/landing-sections/footer";
-import { Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
+import { Twitter, Linkedin, Instagram, Youtube, Home } from "lucide-react";
+import Link from "next/link";
 
 import { trpc } from "@/lib/trpc";
 import { imageTestimonials } from "@/data/testimonials";
@@ -156,6 +157,16 @@ const TestimonialsPage = () => {
       <Navbar />
 
       <div className="min-h-screen w-full max-w-[2000px] mx-auto border-x border-border overflow-hidden pt-24 pb-20 px-4 md:px-6 lg:px-10">
+        <div className="mb-8 max-w-7xl mx-auto">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-text-tertiary hover:text-brand-purple transition-colors group"
+          >
+            <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium">Home</span>
+          </Link>
+        </div>
+
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 space-y-6">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tighter text-text-primary">

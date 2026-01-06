@@ -545,14 +545,22 @@ const Pitch = () => {
                   <p>
                     check out{" "}
                     <Link
-                      href="/pricing#testimonials"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/testimonials"
                       className="text-link hover:text-link-hover underline"
                     >
-                      reviews
+                      testimonials
                     </Link>{" "}
                     from investors who&apos;ve invested.
+                  </p>
+                  <p className="text-text-tertiary italic text-base">
+                    (you can also see more detailed reviews on the{" "}
+                    <Link
+                      href="/pricing#testimonials"
+                      className="text-link hover:text-link-hover underline"
+                    >
+                      pricing page
+                    </Link>
+                    )
                   </p>
                 </div>
               </motion.div>
@@ -718,12 +726,10 @@ const Pitch = () => {
                       </Link>{" "}
                       i have done so far. and check the{" "}
                       <Link
-                        href="/pricing#testimonials"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/testimonials"
                         className="text-link hover:text-link-hover underline"
                       >
-                        reviews
+                        testimonials
                       </Link>{" "}
                       of investors who&apos;ve invested.
                     </p>
