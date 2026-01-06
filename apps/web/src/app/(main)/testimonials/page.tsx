@@ -2,7 +2,6 @@
 import React, { useMemo } from "react";
 import Navbar from "@/components/landing-sections/navbar";
 import Footer from "@/components/landing-sections/footer";
-import Image from "next/image";
 import { Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
 
 import { trpc } from "@/lib/trpc";
@@ -60,12 +59,11 @@ const TestimonialCard = ({ item }: { item: Testimonial }) => {
     return (
       <div className="mb-4 break-inside-avoid rounded-xl border border bg-neutral-900/50 overflow-hidden hover:border-neutral-700 transition-colors p-2">
         <div className="relative w-full">
-          <Image
+          <img
             src={item.imageUrl}
             alt={item.alt}
-            width={1000}
-            height={800}
             className="w-full h-auto object-contain"
+            loading="lazy"
           />
         </div>
       </div>
@@ -80,11 +78,11 @@ const TestimonialCard = ({ item }: { item: Testimonial }) => {
     <div className="mb-4 break-inside-avoid rounded-xl border border bg-neutral-900/50 p-6 hover:border-neutral-700 transition-colors flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/10">
-          <Image
+          <img
             src={item.user.avatar}
             alt={item.user.name}
-            fill
-            className="object-cover"
+            className="w-full h-full object-cover"
+            loading="lazy"
           />
         </div>
         <div className="flex flex-col flex-1">
