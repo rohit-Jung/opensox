@@ -526,7 +526,7 @@ const SecondaryPricingCard = ({
                 </h2>
               </div>
               <div className="flex items-center gap-3 mt-3 flex-wrap">
-                <p className="text-lg text-white-400">(~ ₹4,410 INR)</p>
+                <p className="text-lg text-white-400">(~ ₹4,444 INR)</p>
                 <span className="px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-full text-green-400 text-sm font-medium">
                   Discounted till {discountEndDate}
                 </span>
